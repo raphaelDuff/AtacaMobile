@@ -4,6 +4,5 @@
         <item android:id="@+id/carrinho"
             android:icon="@drawable/carrinho_img"
             app:showAsAction="always"
-            android:title="carrinho"
-            />
+            android:title="carrinho" />
 </menu>

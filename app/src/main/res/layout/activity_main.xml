@@ -9,14 +9,9 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:gravity="center"
-    tools:context="com.example.cristhianc.atacamobile.MainActivity">
+    tools:context="com.example.cristhianc.atacamobile.MainActivity"
+    android:background="@color/corGrayClaro">
 
-    <Button
-        android:id="@+id/btn_read"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:text="@string/message_read_tag"
-        style="@style/Widget.AppCompat.Button.Colored"/>
+
 
 </RelativeLayout>

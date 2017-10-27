@@ -1,108 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context="com.example.cristhianc.atacamobile.DetalhesProduto">
+    tools:context="com.example.cristhianc.atacamobile.DetalhesProduto"
+    android:background="@color/corGrayClaro">
 
-    <TextView
-        android:id="@+id/tv_titulo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Detalhes do produto"
-        android:textSize="30dp"
-        android:textColor="#000000"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
-        android:layout_centerInParent="true"/>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.cristhianc.atacamobile.DetalhesProduto"
+        android:background="@drawable/skol_bg"
+        android:layout_weight="3">
 
-    <TextView
-        android:id="@+id/tv_codigo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="código"
-        android:layout_alignTop="@id/tv_titulo"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="25dp"/>
 
-    <TextView
-        android:id="@+id/tv_codigo_val"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="02202020"
-        android:textColor="#000000"
-        android:textSize="30dp"
-        android:layout_alignTop="@id/tv_codigo"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="25dp" />
+        <TextView
+            android:id="@+id/nomeProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="35dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="90dp"
+            android:textSize="20dp"
+            android:textColor="@color/corGrayEscuro"
+            android:textAllCaps="true"
+            android:text="Cerveja Skol" />
 
-    <TextView
-        android:id="@+id/tv_nome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="nome"
-        android:layout_alignTop="@id/tv_codigo_val"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="25dp" />
+        <TextView
+            android:id="@+id/precoProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/nomeProduto"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="35dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="30dp"
+            android:textSize="50dp"
+            android:textColor="@color/corGrayEscuro"
+            android:textAllCaps="true"
+            android:text="R$ 5,00" />
 
-    <TextView
-        android:id="@+id/tv_nome_val"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sabão em pó"
-        android:textColor="#000000"
-        android:textSize="30dp"
-        android:layout_alignTop="@id/tv_nome"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="25dp" />
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/tv_nome_val"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="50dp"
-        android:text="data de validade" />
 
-    <TextView
-        android:id="@+id/tv_data_val"
-        android:layout_width="368dp"
-        android:layout_height="wrap_content"
-        android:text="01/01/1990"
-        android:textColor="#000000"
-        android:textSize="30dp"
-        android:layout_alignTop="@id/tv_data"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="25dp" />
+    <View
+        android:layout_width="200dp"
+        android:layout_gravity="center"
+        android:layout_height="1dp"
+        android:background="@color/corMain"/>
 
-    <TextView
-        android:id="@+id/tv_valor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="valor"
-        android:layout_alignTop="@id/tv_data_val"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="25dp" />
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.cristhianc.atacamobile.DetalhesProduto"
+        android:background="@color/corGrayClaro"
+        android:layout_weight="2">
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv_valor_val"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="R$ 3,95"
-        android:textColor="#000000"
-        android:textSize="30dp"
-        android:layout_alignTop="@id/tv_valor"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="25dp" />
 
-    <Button
-        android:id="@+id/btn_addCarrinho"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ADICIONAR AO CARRINHO"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="20dp"/>
-</RelativeLayout>
+</LinearLayout>
