@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context="com.example.cristhianc.atacamobile.DetalhesProduto"
+    tools:context="com.example.cristhianc.atacamobile.DetalhesProdutoActivity"
     android:background="@color/corGrayClaro">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +13,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.cristhianc.atacamobile.DetalhesProduto"
+        tools:context="com.example.cristhianc.atacamobile.DetalhesProdutoActivity"
         android:background="@drawable/skol_bg"
         android:layout_weight="3">
 
@@ -48,6 +48,22 @@
             android:textAllCaps="true"
             android:text="R$ 5,00" />
 
+        <TextView
+            android:id="@+id/descProduto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/nomeProduto"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="35dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginTop="20dp"
+            android:layout_alignBaseline="@id/precoProduto"
+            android:textSize="20dp"
+            android:textColor="@color/corGrayEscuro"
+            android:textAllCaps="false"
+            android:text="/473ml" />
+
     </RelativeLayout>
 
 
@@ -62,17 +78,114 @@
         android:layout_height="match_parent"
         android:layout_weight="2"
         android:background="@color/corGrayClaro"
-        tools:context="com.example.cristhianc.atacamobile.DetalhesProduto">
+        tools:context="com.example.cristhianc.atacamobile.DetalhesProdutoActivity">
+
+
+        <LinearLayout
+            android:id="@+id/layout_codigo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp">
+
+            <TextView
+                android:id="@+id/codigolabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/corGrayMenosEscuro"
+                android:text="código"
+                android:textSize="@dimen/tam_label"
+                android:textStyle="italic"
+                android:layout_gravity="left"/>
+            <TextView
+                android:id="@+id/codigo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/corGrayEscuro"
+                android:text="001134"
+                android:textSize="30dp"
+                android:textAlignment="center" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_validade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="85dp">
+
+            <TextView
+                android:id="@+id/validadelabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/corGrayMenosEscuro"
+                android:text="validade"
+                android:textStyle="italic"
+                android:textSize="@dimen/tam_label"
+                android:layout_gravity="left"/>
+            <TextView
+                android:id="@+id/validade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/corGrayEscuro"
+                android:text="31/01/2018"
+                android:textSize="30dp"
+                android:textAlignment="center" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_detalhes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="150dp">
+
+            <TextView
+                android:id="@+id/detalheslabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/corGrayMenosEscuro"
+                android:text="+ info"
+                android:textSize="@dimen/tam_label"
+                android:textStyle="italic"
+                android:layout_gravity="left"/>
+            <TextView
+                android:id="@+id/detalhes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/corGrayEscuro"
+                android:text="Lorem ipsum dolor"
+                android:textSize="20dp"
+                android:textAlignment="center" />
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
             android:layout_alignBottom="@+id/linearLayoutBotoes"
             android:layout_marginBottom="60dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/selecioneLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/linearLayoutBotoes"
@@ -80,19 +193,45 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="140dp"
-                android:layout_marginRight="140dp"
+                android:layout_marginEnd="100dp"
+                android:textSize="@dimen/tam_label"
+                android:layout_marginRight="100dp"
                 android:textColor="@color/corGrayMenosEscuro"
                 android:text="selecione a quantidade"
-                android:textAlignment="center"
-                android:textStyle="italic" />
+                android:textAlignment="center" />
 
-            <NumberPicker
-                android:id="@+id/np"
+            <Button
+                android:id="@+id/btn_menos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="30dp"
 
+                android:text="-"
+                android:background="@android:color/transparent"
+                android:textColor="@color/corMain"
                 />
+
+            <TextView
+    android:id="@+id/quantidade"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="0"
+    android:textSize="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/corGrayMenosEscuro"
+    ></TextView>
+            <Button
+                android:textSize="30dp"
+                android:id="@+id/btn_mais"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/corMain"
+                android:background="@android:color/transparent"
+                android:text="+" />
+
 
         </LinearLayout>
 
@@ -107,7 +246,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/btn_adicionarCarrinho"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"

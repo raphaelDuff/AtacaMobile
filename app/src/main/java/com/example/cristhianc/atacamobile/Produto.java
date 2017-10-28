@@ -10,14 +10,20 @@ public class Produto {
     private String nome;
     private String dataValidade;
     private String desc;
+    private String info;
     private double valor;
 
-    public Produto(int id, String nome, String dataValidade, String desc, double valor){
+    public Produto(){
+
+    }
+
+    public Produto(int id, String nome, String dataValidade, String desc, double valor,String info){
         this.nome = nome;
         this.dataValidade = dataValidade;
         this.desc = desc;
         this.valor = valor;
         this.id = id;
+        this.info = info;
     }
 
 
@@ -32,6 +38,14 @@ public class Produto {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public String getInfo() {
+        return info;
     }
 
     public String getDataValidade() {

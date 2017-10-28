@@ -9,21 +9,21 @@ import java.util.List;
 
 public class Carrinho {
 
-    private LinkedList<Produto> produtos;
+    private LinkedList<CarrinhoItem> produtos;
 
     public Carrinho(){
-        produtos = new LinkedList<Produto>();
+        produtos = new LinkedList<CarrinhoItem>();
     }
 
-    public void addCarinho(Produto p){
+    public void addCarinho(CarrinhoItem p){
         produtos.add(p);
     }
 
-    public void deleteCarrinho(Produto p){
+    public void deleteCarrinho(CarrinhoItem p){
         produtos.remove(p);
     }
 
-    public LinkedList<Produto> getCarrinho(){
+    public LinkedList<CarrinhoItem> getCarrinho(){
         return produtos;
     }
 }

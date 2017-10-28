@@ -3,8 +3,8 @@
     <item android:drawable="@color/corMain"/>
     <item>
         <bitmap
-            android:gravity="fill_horizontal|clip_vertical"
-            android:src="@drawable/skol"
+            android:gravity="clip_vertical"
+            android:src="@drawable/skol4"
             android:alpha="0.3"/>
     </item>
 

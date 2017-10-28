@@ -28,8 +28,8 @@
                 <action android:name="android.nfc.action.TAG_DISCOVERED"/>
             </intent-filter>
         </activity>
-        <activity android:name=".DetalhesProduto" />
-        <activity android:name=".CarrinhoProdutos"></activity>
+        <activity android:name=".DetalhesProdutoActivity" />
+        <activity android:name=".CarrinhoProdutosActivity"></activity>
     </application>
 
     <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
