@@ -12,6 +12,7 @@ public class CarrinhoItem {
     public CarrinhoItem(){
         prod = new Produto();
     }
+
     public Produto getProd() {
         return prod;
     }

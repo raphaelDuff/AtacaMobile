@@ -1,5 +1,6 @@
 package com.example.cristhianc.atacamobile;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,10 +10,10 @@ import java.util.List;
 
 public class Carrinho {
 
-    private LinkedList<CarrinhoItem> produtos;
+    private ArrayList<CarrinhoItem> produtos;
 
     public Carrinho(){
-        produtos = new LinkedList<CarrinhoItem>();
+        produtos = new ArrayList<CarrinhoItem>();
     }
 
     public void addCarinho(CarrinhoItem p){
@@ -23,7 +24,7 @@ public class Carrinho {
         produtos.remove(p);
     }
 
-    public LinkedList<CarrinhoItem> getCarrinho(){
+    public ArrayList<CarrinhoItem> getCarrinho(){
         return produtos;
     }
 }

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,11 +35,19 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
         setFontes();
 
         String json = sp.getString("carrinhoObj", "");
-        List<CarrinhoItem> produtos = new Gson().fromJson(json, Carrinho.class).getCarrinho();
+        ArrayList<CarrinhoItem> produtos = new ArrayList<CarrinhoItem>();
+        CarrinhoItem ci = new CarrinhoItem();
+        ci.setProd(new Produto(12, "Cerveja Skol", "","",2.3,""));
+        ci.setQuantidade(5);
+        produtos.add(ci);
+        ci = new CarrinhoItem();
+        ci.setProd(new Produto(12, "Sabão em Pó Omo", "","",5.1,""));
+        ci.setQuantidade(3);
+        produtos.add(ci);
         setSubtotal(produtos);
         ListView lv = (ListView) findViewById(R.id.lista);
 
-        ArrayAdapter<CarrinhoItem> adapter = new ArrayAdapter<CarrinhoItem>(this, android.R.layout.simple_list_item_1, produtos);
+        CustomAdapter adapter = new CustomAdapter(produtos, getApplicationContext());
         lv.setAdapter(adapter);
 
         final ActionBar actionBar = getSupportActionBar();
