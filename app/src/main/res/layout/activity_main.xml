@@ -13,5 +13,12 @@
     android:background="@color/corGrayClaro">
 
 
-
+    <Button
+        android:id="@+id/btn_read"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="196dp"
+        android:text="Button" />
 </RelativeLayout>

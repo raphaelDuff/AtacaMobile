@@ -57,14 +57,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        /*bt.setOnClickListener(new View.OnClickListener() {
+        try{
+            Intent intent = new Intent(MainActivity.this, DetalhesProduto.class);
+            startActivity(intent);
+        }catch(Exception e){
+            String m = e.getMessage() + " " + e.getLocalizedMessage();
+        }
+
+        bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                try{
                 Intent intent = new Intent(MainActivity.this, DetalhesProduto.class);
                 startActivity(intent);
+                }catch(Exception e){
+                    String m = e.getMessage() + " " + e.getLocalizedMessage();
+                }
             }
-        });*/
+        });
 
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -83,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        mNfcAdapter.disableForegroundDispatch(this);
+//        mNfcAdapter.disableForegroundDispatch(this);
     }
 
     @Override

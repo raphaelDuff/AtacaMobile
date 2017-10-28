@@ -7,4 +7,5 @@
     <color name="corBranco">#FFFFFF</color>
     <color name="corGrayEscuro">#333333</color>
     <color name="corGrayClaro">#efefef</color>
+    <color name="corGrayMenosEscuro">#424242</color>
 </resources>

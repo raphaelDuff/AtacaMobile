@@ -42,7 +42,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="35dp"
             android:layout_marginStart="35dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:textSize="50dp"
             android:textColor="@color/corGrayEscuro"
             android:textAllCaps="true"
@@ -55,16 +55,70 @@
         android:layout_width="200dp"
         android:layout_gravity="center"
         android:layout_height="1dp"
-        android:background="@color/corMain"/>
+        android:background="@color/corGrayMenosEscuro"/>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.cristhianc.atacamobile.DetalhesProduto"
+        android:layout_weight="2"
         android:background="@color/corGrayClaro"
-        android:layout_weight="2">
+        tools:context="com.example.cristhianc.atacamobile.DetalhesProduto">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignBottom="@+id/linearLayoutBotoes"
+            android:layout_marginBottom="60dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/linearLayoutBotoes"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="140dp"
+                android:layout_marginRight="140dp"
+                android:textColor="@color/corGrayMenosEscuro"
+                android:text="selecione a quantidade"
+                android:textAlignment="center"
+                android:textStyle="italic" />
+
+            <NumberPicker
+                android:id="@+id/np"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayoutBotoes"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_below="@+id/np"
+                android:background="@drawable/adicionarbotao"
+                android:text="adicionar ao carrinho"
+                android:textSize="18sp"
+                android:textAllCaps="true" />
+        </LinearLayout>
+
+
     </RelativeLayout>
 
 
