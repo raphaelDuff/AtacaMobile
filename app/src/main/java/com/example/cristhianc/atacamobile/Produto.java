@@ -6,7 +6,7 @@ package com.example.cristhianc.atacamobile;
 
 public class Produto {
 
-    private int id;
+    private static int id = 0;
     private String nome;
     private String dataValidade;
     private String desc;
@@ -14,15 +14,15 @@ public class Produto {
     private double valor;
 
     public Produto(){
-
+        this.id = ++id;
     }
 
-    public Produto(int id, String nome, String dataValidade, String desc, double valor,String info){
+    public Produto(String nome, String dataValidade, String desc, double valor,String info){
         this.nome = nome;
         this.dataValidade = dataValidade;
         this.desc = desc;
         this.valor = valor;
-        this.id = id;
+        this.id = ++id;
         this.info = info;
     }
 

@@ -1,6 +1,8 @@
 package com.example.cristhianc.atacamobile;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.DataSetObserver;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
@@ -8,10 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.w3c.dom.Text;
 
@@ -25,30 +29,38 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     TextView tv_subtotal_label;
     TextView tv_subtotal;
+    ListView lista;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carrinho_produtos);
 
         sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        editor = sp.edit();
+
+
         initTVs();
         setFontes();
 
-        String json = sp.getString("carrinhoObj", "");
-        ArrayList<CarrinhoItem> produtos = new ArrayList<CarrinhoItem>();
-        CarrinhoItem ci = new CarrinhoItem();
-        ci.setProd(new Produto(12, "Cerveja Skol", "","",2.3,""));
-        ci.setQuantidade(5);
-        produtos.add(ci);
-        ci = new CarrinhoItem();
-        ci.setProd(new Produto(12, "Sabão em Pó Omo", "","",5.1,""));
-        ci.setQuantidade(3);
-        produtos.add(ci);
-        setSubtotal(produtos);
-        ListView lv = (ListView) findViewById(R.id.lista);
+        atualizarCarrinho();
+        updTotal(lista.getAdapter());
 
-        CustomAdapter adapter = new CustomAdapter(produtos, getApplicationContext());
-        lv.setAdapter(adapter);
+
+        DataSetObserver dso = new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                updTotal(lista.getAdapter());
+                ArrayList<CarrinhoItem> itensCarrinho = ((CustomAdapter) lista.getAdapter()).getDataSet();
+
+                editor.putString("listaCarrinho", new Gson().toJson(itensCarrinho));
+                editor.commit();
+
+            }
+        };
+
+        ((CustomAdapter) lista.getAdapter()).setNotifyOnChange(true);
+        lista.getAdapter().registerDataSetObserver(dso);
 
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Carrinho");
@@ -56,15 +68,17 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.voltar_img);
     }
 
-    protected void setSubtotal(List<CarrinhoItem> l){
-        double subtotal = 0;
+
+    protected void updTotal(ListAdapter adpt){
+        double total = 0;
         TextView tv_subtotal = (TextView) findViewById(R.id.subtotal);
 
-        for (CarrinhoItem carrinhoItem : l) {
-            subtotal += carrinhoItem.getProd().getValor() * carrinhoItem.getQuantidade();
+        for(int i = 0; i < adpt.getCount(); i++){
+            CarrinhoItem ci = (CarrinhoItem) adpt.getItem(i);
+            total+= ci.getSubtotal();
         }
 
-        tv_subtotal.setText(String.format("R$ %.2f", subtotal));
+        tv_subtotal.setText(String.format("R$ %.2f", total));
 
     }
 
@@ -97,6 +111,41 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Karla-Bold.ttf");
         tv_subtotal_label.setTypeface(fontItalico);
         tv_subtotal.setTypeface(fontBold);
+    }
+
+    protected ArrayList<CarrinhoItem> getListaCarrinho(){
+        String strListaCarrinho = sp.getString("listaCarrinho", "");
+        ArrayList<CarrinhoItem> itensCarrinho = new ArrayList<CarrinhoItem>();
+
+        if (!strListaCarrinho.equals("")){
+            itensCarrinho = new Gson().fromJson(strListaCarrinho, new TypeToken<List<CarrinhoItem>>(){}.getType());
+        }
+
+        return itensCarrinho;
+    }
+
+
+    protected void atualizarCarrinho(){
+        CarrinhoItem ci = new CarrinhoItem();
+        lista = (ListView) findViewById(R.id.lista);
+
+        Gson gson = new Gson();
+        if(getIntent()!= null && getIntent().getExtras() != null){
+            Bundle b = getIntent().getExtras();
+            if(!b.getString("objAddCarrinho").equals(null)){
+                ci = gson.fromJson(b.getString("objAddCarrinho"), CarrinhoItem.class);
+
+                ArrayList<CarrinhoItem> itens = getListaCarrinho();
+                lista.setAdapter(new CustomAdapter(itens, getApplicationContext()));
+                ((CustomAdapter) lista.getAdapter()).add(ci);
+                ArrayList<CarrinhoItem> itensCarrinho = ((CustomAdapter) lista.getAdapter()).getDataSet();
+
+                editor.putString("listaCarrinho", new Gson().toJson(itensCarrinho));
+                editor.commit();
+
+            }
+        }
+
     }
 
 }

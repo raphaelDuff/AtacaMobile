@@ -25,6 +25,10 @@ public class CarrinhoItem {
         return this.quantidade;
     }
 
+    public double getSubtotal(){
+        return prod.getValor() * quantidade;
+    }
+
     public void setQuantidade(int quantidade){
         this.quantidade = quantidade;
     }

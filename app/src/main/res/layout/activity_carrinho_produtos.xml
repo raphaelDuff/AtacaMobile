@@ -39,7 +39,7 @@
             android:layout_marginLeft="20dp"
             android:textSize="20dp"
             android:textColor="@color/corGrayMenosEscuro"
-            android:text="subtotal"/>
+            android:text="total"/>
 
         <TextView
             android:id="@+id/subtotal"

@@ -25,7 +25,9 @@ public class CustomAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
         TextView txtName;
         TextView txtType;
         TextView txtVersion;
-        ImageView info;
+        ImageView editBtn;
+        ImageView rmvBtn;
+        TextView total;
     }
 
     public CustomAdapter(ArrayList<CarrinhoItem> data, Context context) {
@@ -35,18 +37,25 @@ public class CustomAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
 
     }
 
+    public ArrayList<CarrinhoItem> getDataSet(){
+        return this.dataSet;
+    }
+
     @Override
     public void onClick(View v) {
 
         int position=(Integer) v.getTag();
-        Object object= getItem(position);
-        CarrinhoItem dataModel=(CarrinhoItem) object;
+
 
         switch (v.getId())
         {
             case R.id.item_edit:
                 Snackbar.make(v, "Teste", Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
+                break;
+            case R.id.item_remove:
+
+                removerLista(position);
                 break;
         }
     }
@@ -66,10 +75,12 @@ public class CustomAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.item_lista, parent, false);
+            convertView = inflater.inflate(R.layout.item_lista, null);
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.name);
             viewHolder.txtType = (TextView) convertView.findViewById(R.id.type);
-
+            viewHolder.editBtn = (ImageView) convertView.findViewById(R.id.item_edit);
+            viewHolder.rmvBtn = (ImageView) convertView.findViewById(R.id.item_remove);
+            viewHolder.total = (TextView) convertView.findViewById(R.id.subtotal);
             result=convertView;
 
             convertView.setTag(viewHolder);
@@ -79,10 +90,35 @@ public class CustomAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
         }
 
 
+        viewHolder.txtName.setText(dataModel.getProd().getNome());
+        viewHolder.txtType.setText(String.format("%d x %.2f = R$ %.2f", dataModel.getQuantidade(), dataModel.getProd().getValor(),  dataModel.getSubtotal()));
+        viewHolder.editBtn.setOnClickListener(this);
+        viewHolder.editBtn.setTag(position);
 
-        viewHolder.txtName.setText(dataModel.getProd().getNome() + " - " + dataModel.getQuantidade());
-        viewHolder.txtType.setText(String.format("R$ %.2f", dataModel.getProd().getValor() * dataModel.getQuantidade()));
+        viewHolder.rmvBtn.setOnClickListener(this);
+        viewHolder.rmvBtn.setTag(position);
+
+        //viewHolder.total.setText(String.format("R$ %.2f", getTotal()));
         // Return the completed view to render on screen
         return convertView;
     }
+
+    protected void removerLista(int pos){
+        Object object= getItem(pos);
+        CarrinhoItem dataModel=(CarrinhoItem) object;
+        remove(dataModel);
+        notifyDataSetChanged();
+
+    }
+
+    protected double getTotal(){
+        double total = 0;
+        for(int i = 0; i < getCount(); i++){
+            CarrinhoItem ci = getItem(i);
+            total += ci.getSubtotal();
+        }
+
+        return total;
+    }
+
 }

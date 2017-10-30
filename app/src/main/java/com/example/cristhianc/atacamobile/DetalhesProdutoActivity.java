@@ -22,6 +22,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
     SharedPreferences sp;
     SharedPreferences.Editor editor;
     Produto prod;
+    TextView tvQtd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +34,41 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.voltar_img);
 
+        prod = getProduto();
+        carregarViews();
+        setProdutoTela(prod);
         configurarBotoes();
         alterarFontes();
+    }
+
+    protected void carregarViews(){
+        tvQtd = (TextView) findViewById(R.id.quantidade);
+    }
+
+    protected void setProdutoTela(Produto p){
+        TextView prodNome = (TextView) findViewById(R.id.nomeProduto);
+        TextView prodPreco = (TextView) findViewById(R.id.precoProduto);
+        TextView prodDesc = (TextView)findViewById(R.id.descProduto);
+        TextView prodCodigo = (TextView)findViewById(R.id.codigo);
+        TextView prodValidade = (TextView)findViewById(R.id.validade);
+        TextView prodDetalhes = (TextView)findViewById(R.id.detalhes);
+
+        prodNome.setText(p.getNome());
+        prodPreco.setText(String.format("R$ %.2f", p.getValor()));
+        prodDesc.setText(String.format("/%s", p.getDesc()));
+        prodCodigo.setText(String.format("%d", p.getId()));
+        prodValidade.setText(p.getDataValidade());
+        prodDetalhes.setText(p.getInfo());
+
+    }
+
+
+    protected Produto getProduto(){
+        Intent i = getIntent();
+        Produto p = new Gson().fromJson(i.getStringExtra("objProd"), Produto.class);
+
+        return p;
+
     }
 
     protected void alterarFontes(){
@@ -78,7 +112,8 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         btn_adicionarCarrinho.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initCarrinho();
+                int qtd = Integer.parseInt(tvQtd.getText().toString());
+                addToCarrinho(prod, qtd);
             }
         });
 
@@ -86,7 +121,6 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         btn_mais.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView tvQtd = (TextView) findViewById(R.id.quantidade);
 
                 int qtd = Integer.parseInt(tvQtd.getText().toString());
 
@@ -101,10 +135,9 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         btn_menos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView tvQtd = (TextView) findViewById(R.id.quantidade);
                 int qtd = Integer.parseInt(tvQtd.getText().toString());
 
-                if(qtd > 0){
+                if(qtd > 1){
                     qtd--;
                     String strQtd = String.valueOf(qtd);
                     tvQtd.setText(strQtd);
@@ -114,12 +147,17 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
 
     }
 
-    protected void addToCarrinho(){
+
+
+    protected void addToCarrinho(Produto p, int quantidade){
         Intent intent = new Intent(DetalhesProdutoActivity.this, CarrinhoProdutosActivity.class);
+
         try {
             Gson gson = new Gson();
-            String objAddCarrinho = gson.toJson(getCarrinhoItem());
-            intent.putExtra("objAddCarinho", objAddCarrinho);
+            CarrinhoItem ci = new CarrinhoItem();
+            ci.setProd(p);
+            ci.setQuantidade(quantidade);
+            intent.putExtra("objAddCarrinho", gson.toJson(ci));
             startActivity(intent);
         }catch (Exception e){
             mostrarMensagem("Erro ao adicionar ao carrinho.");
@@ -135,7 +173,6 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
     }
 
     protected void initCarrinho(){
-
         Intent intent = new Intent(DetalhesProdutoActivity.this, CarrinhoProdutosActivity.class);
         startActivity(intent);
     }

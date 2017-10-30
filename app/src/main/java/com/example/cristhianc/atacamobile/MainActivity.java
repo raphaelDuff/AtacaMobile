@@ -11,6 +11,8 @@ import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Build;
 import android.os.Parcelable;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +22,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sp;
@@ -27,14 +31,19 @@ public class MainActivity extends AppCompatActivity {
     private NfcAdapter mNfcAdapter;
     private PendingIntent pendingIntent;
     private IntentFilter[] nfcIntentFilter;
+    private Produto prod;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        initDebugProd();
         inicializarBotoes();
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        editor = sp.edit();
 
+        editor.putString("listaCarrinho", "");
+        editor.commit();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.NFC) != PackageManager.PERMISSION_GRANTED) {
@@ -111,14 +120,17 @@ public class MainActivity extends AppCompatActivity {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initDetalhesProdutos();
+                initDetalhesProdutos(prod);
             }
         });
     }
 
 
-    protected void initDetalhesProdutos(){
+    protected void initDetalhesProdutos(Produto prod){
         Intent intent = new Intent(MainActivity.this, DetalhesProdutoActivity.class);
+        Gson gson = new Gson();
+        String strProd = gson.toJson(prod);
+        intent.putExtra("objProd", strProd);
         startActivity(intent);
     }
 
@@ -146,5 +158,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    protected void initDebugProd(){
+        prod = new Produto();
+
+        prod.setNome("Cervejas Skol");
+        prod.setValor(7.39);
+        prod.setDesc("600ml");
+        prod.setDataValidade("21/01/2018");
+        prod.setInfo("Lorem ipsum dolor hehe teste");
     }
 }
