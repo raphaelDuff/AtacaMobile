@@ -42,25 +42,7 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
         initTVs();
         setFontes();
 
-        atualizarCarrinho();
-        updTotal(lista.getAdapter());
-
-
-        DataSetObserver dso = new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                updTotal(lista.getAdapter());
-                ArrayList<CarrinhoItem> itensCarrinho = ((CustomAdapter) lista.getAdapter()).getDataSet();
-
-                editor.putString("listaCarrinho", new Gson().toJson(itensCarrinho));
-                editor.commit();
-
-            }
-        };
-
-        ((CustomAdapter) lista.getAdapter()).setNotifyOnChange(true);
-        lista.getAdapter().registerDataSetObserver(dso);
+        initLista();
 
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Carrinho");
@@ -124,10 +106,31 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
         return itensCarrinho;
     }
 
+    protected void initLista(){
+        lista = (ListView) findViewById(R.id.lista);
+        ArrayList<CarrinhoItem> itens = getListaCarrinho();
+        lista.setAdapter(new CustomAdapter(itens, getApplicationContext()));
+        updTotal(lista.getAdapter());
+
+        DataSetObserver dso = new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                updTotal(lista.getAdapter());
+                ArrayList<CarrinhoItem> itensCarrinho = ((CustomAdapter) lista.getAdapter()).getDataSet();
+
+                editor.putString("listaCarrinho", new Gson().toJson(itensCarrinho));
+                editor.commit();
+
+            }
+        };
+
+        ((CustomAdapter) lista.getAdapter()).setNotifyOnChange(true);
+        lista.getAdapter().registerDataSetObserver(dso);
+    }
 
     protected void atualizarCarrinho(){
         CarrinhoItem ci = new CarrinhoItem();
-        lista = (ListView) findViewById(R.id.lista);
 
         Gson gson = new Gson();
         if(getIntent()!= null && getIntent().getExtras() != null){
@@ -136,7 +139,7 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
                 ci = gson.fromJson(b.getString("objAddCarrinho"), CarrinhoItem.class);
 
                 ArrayList<CarrinhoItem> itens = getListaCarrinho();
-                lista.setAdapter(new CustomAdapter(itens, getApplicationContext()));
+
                 ((CustomAdapter) lista.getAdapter()).add(ci);
                 ArrayList<CarrinhoItem> itensCarrinho = ((CustomAdapter) lista.getAdapter()).getDataSet();
 

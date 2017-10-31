@@ -22,6 +22,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,15 +35,21 @@ public class MainActivity extends AppCompatActivity {
     private PendingIntent pendingIntent;
     private IntentFilter[] nfcIntentFilter;
     private Produto prod;
+    private DatabaseReference mDatabase;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initDebugProd();
+
         inicializarBotoes();
         sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = sp.edit();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        initDebugProd();
+
 
         editor.putString("listaCarrinho", "");
         editor.commit();
@@ -161,12 +170,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void initDebugProd(){
-        prod = new Produto();
 
+
+
+/*        prod = new Produto();
+        prod.setCodigo("273717");
         prod.setNome("Cervejas Skol");
         prod.setValor(7.39);
         prod.setDesc("600ml");
         prod.setDataValidade("21/01/2018");
         prod.setInfo("Lorem ipsum dolor hehe teste");
+        prod.setImgCaminho("skol4.png");*/
+
+        try {
+
+            mDatabase.child("produtos").push().setValue(prod);
+        }catch (Exception e){
+            String error = e.getMessage();
+        }
     }
 }

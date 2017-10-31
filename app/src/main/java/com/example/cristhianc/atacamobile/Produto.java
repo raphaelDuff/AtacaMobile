@@ -6,29 +6,43 @@ package com.example.cristhianc.atacamobile;
 
 public class Produto {
 
-    private static int id = 0;
+    private String codigo;
     private String nome;
     private String dataValidade;
     private String desc;
     private String info;
     private double valor;
 
-    public Produto(){
-        this.id = ++id;
+    public String getImgCaminho() {
+        return imgCaminho;
     }
 
-    public Produto(String nome, String dataValidade, String desc, double valor,String info){
+    public void setImgCaminho(String imgCaminho) {
+        this.imgCaminho = imgCaminho;
+    }
+
+    private String imgCaminho;
+
+    public Produto(){
+
+    }
+
+    public Produto(String codigo, String nome, String dataValidade, String desc, double valor,String info, String imgCaminho){
         this.nome = nome;
         this.dataValidade = dataValidade;
         this.desc = desc;
         this.valor = valor;
-        this.id = ++id;
+        this.codigo = codigo;
         this.info = info;
+        this.imgCaminho = imgCaminho;
     }
 
+    public String getCodigo() {
+        return codigo;
+    }
 
-    public int getId() {
-        return id;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
 
@@ -77,4 +91,15 @@ public class Produto {
         return nome + " - " + valor;
     }
 
+    @Override
+    public boolean equals(Object obj){
+        boolean igual = false;
+
+        if(obj instanceof Produto){
+            Produto p = (Produto) obj;
+            igual = (this.getCodigo().equals(p.getCodigo()));
+        }
+
+        return igual;
+    }
 }

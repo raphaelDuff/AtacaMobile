@@ -3,6 +3,8 @@ package com.example.cristhianc.atacamobile;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,8 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetalhesProdutoActivity extends AppCompatActivity {
 
@@ -28,7 +34,8 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes_produto);
-
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        editor = sp.edit();
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -56,7 +63,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         prodNome.setText(p.getNome());
         prodPreco.setText(String.format("R$ %.2f", p.getValor()));
         prodDesc.setText(String.format("/%s", p.getDesc()));
-        prodCodigo.setText(String.format("%d", p.getId()));
+        prodCodigo.setText(p.getCodigo());
         prodValidade.setText(p.getDataValidade());
         prodDetalhes.setText(p.getInfo());
 
@@ -157,7 +164,29 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
             CarrinhoItem ci = new CarrinhoItem();
             ci.setProd(p);
             ci.setQuantidade(quantidade);
-            intent.putExtra("objAddCarrinho", gson.toJson(ci));
+
+            String strListaCarrinho = sp.getString("listaCarrinho", "");
+            ArrayList<CarrinhoItem> itensCarrinho = new ArrayList<CarrinhoItem>();
+
+            if(!strListaCarrinho.equals("")){
+                itensCarrinho = new Gson().fromJson(strListaCarrinho, new TypeToken<List<CarrinhoItem>>(){}.getType());
+            }
+
+            boolean achouIgual = false;
+            for(CarrinhoItem item : itensCarrinho){
+                if(ci.getProd().equals(item.getProd())){
+                    item.setQuantidade(item.getQuantidade() + ci.getQuantidade());
+                    achouIgual = true;
+                    break;
+                }
+            }
+
+            if(!achouIgual) {
+                itensCarrinho.add(ci);
+            }
+            editor.putString("listaCarrinho", new Gson().toJson(itensCarrinho));
+            editor.commit();
+
             startActivity(intent);
         }catch (Exception e){
             mostrarMensagem("Erro ao adicionar ao carrinho.");
