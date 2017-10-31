@@ -22,9 +22,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
@@ -173,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-/*        prod = new Produto();
+        /*prod = new Produto();
         prod.setCodigo("273717");
         prod.setNome("Cervejas Skol");
         prod.setValor(7.39);
@@ -184,7 +187,19 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            mDatabase.child("produtos").push().setValue(prod);
+            mDatabase.child("produtos").orderByChild("codigo").equalTo("273717").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot child: dataSnapshot.getChildren()) {
+                        prod = child.getValue(Produto.class);
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+
+
+                }
+            });
         }catch (Exception e){
             String error = e.getMessage();
         }

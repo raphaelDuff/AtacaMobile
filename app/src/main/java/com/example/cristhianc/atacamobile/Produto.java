@@ -12,6 +12,7 @@ public class Produto {
     private String desc;
     private String info;
     private double valor;
+    private String imgCaminho;
 
     public String getImgCaminho() {
         return imgCaminho;
@@ -21,7 +22,7 @@ public class Produto {
         this.imgCaminho = imgCaminho;
     }
 
-    private String imgCaminho;
+
 
     public Produto(){
 
