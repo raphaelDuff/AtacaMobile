@@ -42,6 +42,11 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.voltar_img);
 
         prod = getProduto();
+
+        if(prod == null){
+            finish();
+        }
+
         carregarViews();
         setProdutoTela(prod);
         configurarBotoes();

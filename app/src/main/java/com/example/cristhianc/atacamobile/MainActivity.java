@@ -3,10 +3,14 @@ package com.example.cristhianc.atacamobile;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Build;
@@ -20,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private IntentFilter[] nfcIntentFilter;
     private Produto prod;
     private DatabaseReference mDatabase;
+    private ProgressBar pb;
+    private Button bt;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
         editor = sp.edit();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        initDebugProd();
-
 
         editor.putString("listaCarrinho", "");
         editor.commit();
@@ -61,19 +66,27 @@ public class MainActivity extends AppCompatActivity {
             if (checkSelfPermission(Manifest.permission.NFC) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.NFC}, 1);
             }
+
+            if (checkSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 1);
+            }
+
         }
 
+        initDebugProd();
 
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if(mNfcAdapter != null){
+            mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
 
-        IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
-        IntentFilter ndefDetected = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-        IntentFilter techDetected = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
-        nfcIntentFilter = new IntentFilter[]{techDetected,tagDetected,ndefDetected};
-        pendingIntent = PendingIntent.getActivity(
-                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+            IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+            IntentFilter ndefDetected = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+            IntentFilter techDetected = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
+            nfcIntentFilter = new IntentFilter[]{techDetected, tagDetected, ndefDetected};
+            pendingIntent = PendingIntent.getActivity(
+                    this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
+        }
 
     }
 
@@ -127,18 +140,21 @@ public class MainActivity extends AppCompatActivity {
 
     public void inicializarBotoes(){
 
-        Button bt = (Button) findViewById(R.id.btn_lerTag);
+        bt = (Button) findViewById(R.id.btn_lerTag);
 
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initDetalhesProdutos(prod);
+                initDetalhesProdutos();
             }
         });
+
+        bt.setClickable(false);
     }
 
 
-    protected void initDetalhesProdutos(Produto prod){
+    protected void initDetalhesProdutos(){
+
         Intent intent = new Intent(MainActivity.this, DetalhesProdutoActivity.class);
         Gson gson = new Gson();
         String strProd = gson.toJson(prod);
@@ -175,8 +191,8 @@ public class MainActivity extends AppCompatActivity {
     protected void initDebugProd(){
 
 
-
-        /*prod = new Produto();
+        /*
+        prod = new Produto();
         prod.setCodigo("273717");
         prod.setNome("Cervejas Skol");
         prod.setValor(7.39);
@@ -187,21 +203,48 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            mDatabase.child("produtos").orderByChild("codigo").equalTo("273717").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot child: dataSnapshot.getChildren()) {
-                        prod = child.getValue(Produto.class);
+            ConnectivityManager cm =
+                    (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting();
+
+            if(!isConnected){
+                mostrarMensagem("Nenhuma conexao com a internet");
+            }else {
+
+                mDatabase.child("produtos").orderByChild("codigo").equalTo("273717").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            prod = child.getValue(Produto.class);
+                            pb.setVisibility(View.GONE);
+                            bt.setClickable(true);
+                        }
                     }
-                }
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
 
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
 
-                }
-            });
+                    }
+                });
+
+                pb = (ProgressBar) findViewById(R.id.progressBar);
+                pb.setVisibility(View.VISIBLE);
+            }
+
         }catch (Exception e){
             String error = e.getMessage();
         }
     }
+
+    protected void mostrarMensagem(String msg){
+
+        int duration = Toast.LENGTH_LONG;
+
+        Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
+        toast.show();
+    }
+
 }
