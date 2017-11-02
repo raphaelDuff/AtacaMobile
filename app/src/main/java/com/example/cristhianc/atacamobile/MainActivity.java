@@ -1,21 +1,20 @@
 package com.example.cristhianc.atacamobile;
 
-
 import android.Manifest;
 import android.app.PendingIntent;
-import android.content.Context;
+
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+
 import android.os.Build;
 import android.os.Parcelable;
-import android.preference.Preference;
+
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,17 +24,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.UnsupportedEncodingException;
+
+public class MainActivity extends AppCompatActivity implements FragmentDisplay {
 
     SharedPreferences sp;
     SharedPreferences.Editor editor;
@@ -46,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private ProgressBar pb;
     private Button bt;
-
+    private LerTagFragment fragment;
+    private boolean leituraLiberada;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = sp.edit();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         editor.putString("listaCarrinho", "");
         editor.commit();
@@ -73,21 +70,28 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        initDebugProd();
-
-        if(mNfcAdapter != null){
-            mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        initNFC();
 
 
-            IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
-            IntentFilter ndefDetected = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-            IntentFilter techDetected = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
-            nfcIntentFilter = new IntentFilter[]{techDetected, tagDetected, ndefDetected};
-            pendingIntent = PendingIntent.getActivity(
-                    this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
+
+    }
+
+    public void initNFC(){
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+        IntentFilter ndefDetected = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        IntentFilter techDetected = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
+        try {
+            techDetected.addDataType("application/com.example.cristhianc.atacamobile");
+        } catch (IntentFilter.MalformedMimeTypeException e) {
+            e.printStackTrace();
         }
 
+        nfcIntentFilter = new IntentFilter[]{techDetected, tagDetected, ndefDetected};
+        pendingIntent = PendingIntent.getActivity(
+                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
     }
 
     @Override
@@ -105,11 +109,7 @@ public class MainActivity extends AppCompatActivity {
         if(mNfcAdapter!= null) {
             mNfcAdapter.enableForegroundDispatch(this, pendingIntent, nfcIntentFilter, null);
         }else{
-            CharSequence text = "NFC não detectado!";
-            int duration = Toast.LENGTH_LONG;
-
-            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
-            toast.show();
+            Helper.mostrarMensagem("NFC não detectado!", getApplicationContext());
         }
     }
 
@@ -137,6 +137,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onAbriuFragment() {
+
+        leituraLiberada = true;
+    }
+
+    @Override
+    public void onFechouFragment() {
+
+        leituraLiberada  = false;
+        Intent intentDetalhes = new Intent(MainActivity.this, DetalhesProdutoActivity.class);
+
+        intentDetalhes.putExtra("atacamobile-cod", "273717");
+        startActivity(intentDetalhes);
+    }
 
     public void inicializarBotoes(){
 
@@ -145,11 +160,20 @@ public class MainActivity extends AppCompatActivity {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initDetalhesProdutos();
+                mostrarFragment();
             }
         });
 
-        bt.setClickable(false);
+    }
+
+    public void mostrarFragment(){
+        fragment = (LerTagFragment) getFragmentManager().findFragmentByTag(LerTagFragment.TAG);
+
+        if(fragment == null){
+            fragment = new LerTagFragment();
+        }
+
+        fragment.show(getFragmentManager(), LerTagFragment.TAG);
     }
 
 
@@ -165,86 +189,45 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent){
         super.onNewIntent(intent);
+        //Helper.mostrarMensagem("LEU NFC!!!!", getApplicationContext());
 
-        CharSequence text = "LEU NFC!!!!";
-        int duration = Toast.LENGTH_LONG;
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        if(leituraLiberada) {
 
-        Toast toast = Toast.makeText(getApplicationContext(), text, duration);
-        toast.show();
+            fragment.dismiss();
+
+            if (intent != null &&
+                    (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction()) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction()))) {
+                Parcelable[] rawMsg = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+                if (rawMsg != null) {
+                    String str;
+                    NdefMessage[] mensagens = new NdefMessage[rawMsg.length];
+                    for (int i = 0; i < mensagens.length; i++) {
+                        mensagens[i] = (NdefMessage) rawMsg[i];
+                        try {
+                            str = new String(mensagens[i].getRecords()[0].getPayload(), "UTF-8");
+                            if (!str.startsWith("atacamobile-cod:")) {
+                                Helper.mostrarMensagem("Erro ao ler tag", getApplicationContext());
+                                finish();
+                            }
+
+                            String[] strTag = str.split(":");
+
+                            Intent intentDetalhes = new Intent(MainActivity.this, DetalhesProdutoActivity.class);
+
+                            intentDetalhes.putExtra("atacamobile-cod", strTag[1]);
+
+                            startActivity(intentDetalhes);
 
 
-        if(intent != null && (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction()) ||
-                NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()))){
-
-
-            Parcelable[] rawMsg =
-                    intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            if(rawMsg != null){
-                NdefMessage[] mensagens = new NdefMessage[rawMsg.length];
-                for(int i = 0; i < mensagens.length; i++){
-                    mensagens[i] = (NdefMessage) rawMsg[i];
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         }
-    }
 
-    protected void initDebugProd(){
-
-
-        /*
-        prod = new Produto();
-        prod.setCodigo("273717");
-        prod.setNome("Cervejas Skol");
-        prod.setValor(7.39);
-        prod.setDesc("600ml");
-        prod.setDataValidade("21/01/2018");
-        prod.setInfo("Lorem ipsum dolor hehe teste");
-        prod.setImgCaminho("skol4.png");*/
-
-        try {
-
-            ConnectivityManager cm =
-                    (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            boolean isConnected = activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting();
-
-            if(!isConnected){
-                mostrarMensagem("Nenhuma conexao com a internet");
-            }else {
-
-                mDatabase.child("produtos").orderByChild("codigo").equalTo("273717").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            prod = child.getValue(Produto.class);
-                            pb.setVisibility(View.GONE);
-                            bt.setClickable(true);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError firebaseError) {
-
-                    }
-                });
-
-                pb = (ProgressBar) findViewById(R.id.progressBar);
-                pb.setVisibility(View.VISIBLE);
-            }
-
-        }catch (Exception e){
-            String error = e.getMessage();
-        }
-    }
-
-    protected void mostrarMensagem(String msg){
-
-        int duration = Toast.LENGTH_LONG;
-
-        Toast toast = Toast.makeText(getApplicationContext(), msg, duration);
-        toast.show();
     }
 
 }

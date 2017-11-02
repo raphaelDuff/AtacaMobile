@@ -9,4 +9,7 @@
     <string name="message_tap_tag">Tap the NFC Tag to your device !</string>
     <string name="hint_message">Message</string>
     <string name="title_activity_detalhes_produto">DetalhesProduto</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
