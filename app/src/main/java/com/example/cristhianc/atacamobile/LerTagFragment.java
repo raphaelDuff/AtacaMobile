@@ -34,9 +34,6 @@ public class LerTagFragment extends DialogFragment {
 
         View view = inflater.inflate(R.layout.fragment_lertag,container,false);
 
-            TextView tv_fragment = (TextView)view.findViewById(R.id.tv_fragment);
-        Typeface fontNormal = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Karla-Regular.ttf");
-        tv_fragment.setTypeface(fontNormal);
 
         return view;
     }

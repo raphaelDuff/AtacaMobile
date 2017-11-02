@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
+import android.graphics.drawable.VectorDrawable;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
@@ -44,20 +45,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
     private ProgressBar pb;
     private Button bt;
     private LerTagFragment fragment;
-    private boolean leituraLiberada;
+    private boolean leituraLiberada = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         inicializarBotoes();
         sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = sp.edit();
-
-
-        editor.putString("listaCarrinho", "");
-        editor.commit();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.NFC) != PackageManager.PERMISSION_GRANTED) {
@@ -71,8 +67,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
         }
 
         initNFC();
-
-
 
 
     }
@@ -143,14 +137,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
         leituraLiberada = true;
     }
 
-    @Override
+    @Override   
     public void onFechouFragment() {
 
         leituraLiberada  = false;
-        Intent intentDetalhes = new Intent(MainActivity.this, DetalhesProdutoActivity.class);
 
-        intentDetalhes.putExtra("atacamobile-cod", "273717");
-        startActivity(intentDetalhes);
     }
 
     public void inicializarBotoes(){

@@ -1,6 +1,10 @@
 package com.example.cristhianc.atacamobile;
 
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.graphics.Typeface;
@@ -106,6 +110,10 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
         return itensCarrinho;
     }
 
+
+
+
+
     protected void initLista(){
         lista = (ListView) findViewById(R.id.lista);
         ArrayList<CarrinhoItem> itens = getListaCarrinho();
@@ -129,6 +137,11 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
         lista.getAdapter().registerDataSetObserver(dso);
     }
 
+
+    protected  void updateItemCarrinho(int pos, int quantidade){
+        ((CustomAdapter) lista.getAdapter()).updateObjLista(pos, quantidade);
+    }
+
     protected void atualizarCarrinho(){
         CarrinhoItem ci = new CarrinhoItem();
 
@@ -150,5 +163,6 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
         }
 
     }
+
 
 }

@@ -1,6 +1,12 @@
 package com.example.cristhianc.atacamobile;
 
+import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +25,7 @@ public class CustomAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
 
     private ArrayList<CarrinhoItem> dataSet;
     Context mContext;
+    FragmentManager fm;
 
     // View lookup cache
     private static class ViewHolder {
@@ -33,7 +40,7 @@ public class CustomAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
     public CustomAdapter(ArrayList<CarrinhoItem> data, Context context) {
         super(context, R.layout.item_lista, data);
         this.dataSet = data;
-        this.mContext=context;
+        this.mContext = context;
 
     }
 
@@ -50,8 +57,11 @@ public class CustomAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
         switch (v.getId())
         {
             case R.id.item_edit:
-                Snackbar.make(v, "Teste", Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
+                Object object = getItem(position);
+                CarrinhoItem dataModel = (CarrinhoItem) object;
+                showDialog(dataModel, position);
+//                Snackbar.make(v, "Teste", Snackbar.LENGTH_LONG)
+//                        .setAction("No action", null).show();
                 break;
             case R.id.item_remove:
 
@@ -68,6 +78,9 @@ public class CustomAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
         CarrinhoItem dataModel = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
+
+        Context context = parent.getContext();
+        fm = ((Activity) context).getFragmentManager();
 
         final View result;
 
@@ -110,6 +123,16 @@ public class CustomAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
         notifyDataSetChanged();
 
     }
+    public void updateObjLista(int pos, int quantidade){
+        Object object = getItem(pos);
+        CarrinhoItem dataModel = (CarrinhoItem) object;
+
+        dataModel.setQuantidade(quantidade);
+        dataSet.set(pos, dataModel);
+
+        notifyDataSetChanged();
+
+    }
 
     protected double getTotal(){
         double total = 0;
@@ -119,6 +142,25 @@ public class CustomAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
         }
 
         return total;
+    }
+
+
+    public void showDialog(CarrinhoItem CI, int pos) {
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction.  We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
+        FragmentTransaction ft = fm.beginTransaction();
+        Fragment prev = fm.findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = CarrinhoEditar.newInstance(CI, pos);
+        newFragment.setTargetFragment(newFragment,1 );
+
+        newFragment.show(ft, "dialog");
     }
 
 }

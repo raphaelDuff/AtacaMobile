@@ -11,11 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +19,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -31,13 +28,9 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,13 +41,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import static java.security.AccessController.getContext;
 
 public class DetalhesProdutoActivity extends AppCompatActivity {
 
@@ -67,6 +55,8 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
     private StorageReference mStorage;
     private String strCodigoProduto;
     public Bitmap bitmapBackground;
+    private int headerLayoutHeight;
+    private int headerLayoutWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,56 +130,16 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
                 mDatabase.child("produtos").orderByChild("codigo").equalTo(strCodigoProduto).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            prod = child.getValue(Produto.class);
-                            progressBar.setVisibility(View.GONE);
-                            setProdutoTela(prod);
-
-/*                            FirebaseStorage.
-                                    getInstance().
-                                    getReferenceFromUrl("gs://atacamobile-97327.appspot.com").
-                                    child("imagens/skol4.png").
-                                    getDownloadUrl().
-                                    addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {*/
-
-                                    Glide.with(DetalhesProdutoActivity.this)
-                                            .using(new FirebaseImageLoader())
-                                            .load(FirebaseStorage.getInstance().getReference().child("imagens/skol4.png"))
-                                            .asBitmap()
-                                            .into(new SimpleTarget<Bitmap>(100,100) {
-                                                @Override
-                                                public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-
-                                                    BitmapDrawable bitmap = new BitmapDrawable(getApplicationContext().getResources(), resource);
-                                                    bitmap.setAlpha(30);
-                                                    bitmap.setGravity(Gravity.CENTER | Gravity.CLIP_VERTICAL | Gravity.CLIP_HORIZONTAL);
-
-                                                    ColorDrawable color = new ColorDrawable(0xFFFFD900);
-
-                                                    Drawable[] layers = {color, bitmap};
-                                                    LayerDrawable layerDrawable = new LayerDrawable(layers);
-
-                                                    RelativeLayout rl = (RelativeLayout) findViewById(R.id.layout_detalhes_header);
-                                                    rl.setBackground(layerDrawable);
-                                                }
-
-                                                @Override
-                                                public void onLoadFailed(Exception e, Drawable errorDrawable){
-                                                    Helper.mostrarMensagem("Erro ao carregar imagem", DetalhesProdutoActivity.this);
-                                                }
-                                            });
-                                /*}
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // Handle any errors
-                                    String e = exception.getMessage();
-                                    String m = e;
-                                }
-                            });*/
-
+                        if (dataSnapshot.getValue() == null) {
+                            Helper.mostrarMensagem("Produto não encontrado", getApplicationContext());
+                            finish();
+                        } else {
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                prod = child.getValue(Produto.class);
+                                progressBar.setVisibility(View.GONE);
+                                setProdutoTela(prod);
+                                setImagemProduto(prod.getImgCaminho());
+                            }
                         }
                     }
 
@@ -206,6 +156,48 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         }
 
     }
+
+    protected void setImagemProduto(String nomeImagem){
+        Glide.with(DetalhesProdutoActivity.this)
+                .using(new FirebaseImageLoader())
+                .load(mStorage.child("imagens/" + nomeImagem))
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+
+                        setHeaderBackground(resource, Helper.getLarguraTela(DetalhesProdutoActivity.this));
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        Helper.mostrarMensagem("Erro ao carregar imagem", DetalhesProdutoActivity.this);
+                    }
+                });
+    }
+
+
+    public void setHeaderBackground(Bitmap bitmap, int screenWidth){
+
+        int largura = screenWidth;
+        int altura = (bitmap.getWidth()/bitmap.getHeight()) * screenWidth;
+
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(getApplicationContext().getResources(), Bitmap.createScaledBitmap(bitmap,largura, altura,true ));
+        bitmapDrawable.setAlpha(50);
+
+        bitmapDrawable.setGravity(Gravity.FILL_HORIZONTAL | Gravity.CLIP_VERTICAL);
+
+
+        ColorDrawable color = new ColorDrawable(0xFFFFD900);
+
+        Drawable[] layers = {color, bitmapDrawable};
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.layout_detalhes_header);
+        rl.setBackground(layerDrawable);
+    }
+
+
 
     protected void alterarFontes(){
         TextView tv;
