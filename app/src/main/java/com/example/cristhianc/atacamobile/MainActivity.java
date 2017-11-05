@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 
 import android.graphics.drawable.VectorDrawable;
@@ -67,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
         }
 
         initNFC();
-
 
     }
 
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
                             str = new String(mensagens[i].getRecords()[0].getPayload(), "UTF-8");
                             if (!str.startsWith("atacamobile-cod:")) {
                                 Helper.mostrarMensagem("Erro ao ler tag", getApplicationContext());
-                                finish();
+                                return;
                             }
 
                             String[] strTag = str.split(":");
