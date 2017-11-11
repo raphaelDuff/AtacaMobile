@@ -1,8 +1,10 @@
 package com.example.cristhianc.atacamobile;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -10,6 +12,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 
 import android.graphics.drawable.VectorDrawable;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
@@ -19,8 +23,10 @@ import android.os.Parcelable;
 
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +36,16 @@ import android.widget.ProgressBar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.DimenHolder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
 import java.io.UnsupportedEncodingException;
 
@@ -47,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
     private Button bt;
     private LerTagFragment fragment;
     private boolean leituraLiberada = false;
+
+    private Drawer drawer;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +86,27 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
 
         initNFC();
 
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("item1");
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName("item2");
+        SecondaryDrawerItem item3 = new SecondaryDrawerItem().withIdentifier(3).withName("item3");
+
+        //Setando o menu lateral (drawer menu)
+        drawer = new DrawerBuilder()
+                .withActivity(this)
+                .withTranslucentStatusBar(false)
+                .withActionBarDrawerToggle(false)
+                .withInnerShadow(true)
+                .addDrawerItems(new SectionDrawerItem(),item1,item2,item3)
+                .build();
+
+        item1.withSetSelected(true);
+
+        //Inscrevendo usuario no grupo de promoções
+        FirebaseMessaging.getInstance().subscribeToTopic("promocoes");
+
     }
+
+
 
     public void initNFC(){
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
