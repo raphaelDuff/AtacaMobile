@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context="com.example.cristhianc.atacamobile.PesquisarProdutoActivity"
+    android:gravity="center"
+>
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/logo" />
+
+    <EditText
+        android:id="@+id/txtBusca"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:hint="@string/pesquisar_digite_produto" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pesquisar"
+        android:layout_marginTop="20dp"
+        android:id="@+id/btn_pesquisar"
+        android:background="@drawable/adicionarbotao"
+        android:textSize="18sp"
+        android:textAllCaps="true"
+        android:layout_gravity="center"
+        />
+</LinearLayout>

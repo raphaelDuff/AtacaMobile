@@ -46,6 +46,7 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.io.UnsupportedEncodingException;
 
@@ -86,9 +87,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
 
         initNFC();
 
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("item1");
-        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName("item2");
-        SecondaryDrawerItem item3 = new SecondaryDrawerItem().withIdentifier(3).withName("item3");
+        PrimaryDrawerItem mainMenuItem = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_mainmenu);
+        PrimaryDrawerItem procureProdutoItem = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.drawer_procurar_produto);
 
         //Setando o menu lateral (drawer menu)
         drawer = new DrawerBuilder()
@@ -96,10 +96,21 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(false)
                 .withInnerShadow(true)
-                .addDrawerItems(new SectionDrawerItem(),item1,item2,item3)
+                .addDrawerItems(new SectionDrawerItem(),mainMenuItem,procureProdutoItem)
                 .build();
 
-        item1.withSetSelected(true);
+        //Marcando menu principal como selecionado
+        mainMenuItem.withSetSelected(true);
+
+        procureProdutoItem.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                Intent i = new Intent(MainActivity.this,PesquisarProdutoActivity.class);
+                startActivity(i);
+                return true;
+
+            }
+        });
 
         //Inscrevendo usuario no grupo de promoções
         FirebaseMessaging.getInstance().subscribeToTopic("promocoes");
