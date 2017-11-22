@@ -24,7 +24,7 @@ public class Helper {
     }
 
     protected static void inserirBD(){
-        Produto p = new Produto("111111", "Sabão em pó OMO Multiação", "12/12/2020", "2kg", 19.60, "Lorem ipsum dolor", "omo.jpg");
+        //Produto p = new Produto("111111", "Sabão em pó OMO Multiação", "12/12/2020", "2kg", 19.60, "Lorem ipsum dolor", "omo.jpg");
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 

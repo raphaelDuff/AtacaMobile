@@ -1,6 +1,7 @@
 package com.example.cristhianc.atacamobile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -8,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -41,6 +43,21 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         actionBar.setTitle("Carrinho");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.voltar_img);
+
+        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Object object = lista.getAdapter().getItem(i);
+                CarrinhoItem dataModel = (CarrinhoItem) object;
+                float coordX = dataModel.getProd().getCoordX();
+                float coordY = dataModel.getProd().getCoordY();
+
+                Intent intent = new Intent(ResultadoPesquisaActivity.this,MapaActivity.class);
+                intent.putExtra("coordx", coordX);
+                intent.putExtra("coordy", coordY);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initLista() {

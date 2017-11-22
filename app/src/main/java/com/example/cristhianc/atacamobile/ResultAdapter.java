@@ -1,6 +1,7 @@
 package com.example.cristhianc.atacamobile;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -55,23 +56,20 @@ public class ResultAdapter extends ArrayAdapter<CarrinhoItem> implements View.On
         int position=(Integer) v.getTag();
 
 
-        switch (v.getId())
-        {
-            case R.id.item_edit:
-                Object object = getItem(position);
-                CarrinhoItem dataModel = (CarrinhoItem) object;
-                showDialog(dataModel, position);
-//                Snackbar.make(v, "Teste", Snackbar.LENGTH_LONG)
-//                        .setAction("No action", null).show();
-                break;
-            case R.id.item_remove:
+        Object object = getItem(position);
+        CarrinhoItem dataModel = (CarrinhoItem) object;
+        float coordX = dataModel.getProd().getCoordX();
+        float coordY = dataModel.getProd().getCoordY();
 
-                removerLista(position);
-                break;
-        }
+        Intent i = new Intent(getContext(),MapaActivity.class);
+        i.putExtra("coordx", coordX);
+        i.putExtra("coordy", coordY);
+        getContext().startActivity(i);
     }
 
     private int lastPosition = -1;
+
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

@@ -13,6 +13,8 @@ public class Produto {
     private String info;
     private double valor;
     private String imgCaminho;
+    private float coordX;
+    private float coordY;
 
     public String getImgCaminho() {
         return imgCaminho;
@@ -28,7 +30,7 @@ public class Produto {
 
     }
 
-    public Produto(String codigo, String nome, String dataValidade, String desc, double valor,String info, String imgCaminho){
+    public Produto(String codigo, String nome, String dataValidade, String desc, double valor,String info, String imgCaminho, float coordX, float coordY){
         this.nome = nome;
         this.dataValidade = dataValidade;
         this.desc = desc;
@@ -36,6 +38,8 @@ public class Produto {
         this.codigo = codigo;
         this.info = info;
         this.imgCaminho = imgCaminho;
+        this.coordX = coordX;
+        this.coordY = coordY;
     }
 
     public String getCodigo() {
@@ -102,5 +106,21 @@ public class Produto {
         }
 
         return igual;
+    }
+
+    public float getCoordX() {
+        return coordX;
+    }
+
+    public void setCoordX(float coordX) {
+        this.coordX = coordX;
+    }
+
+    public float getCoordY() {
+        return coordY;
+    }
+
+    public void setCoordY(float coordY) {
+        this.coordY = coordY;
     }
 }
