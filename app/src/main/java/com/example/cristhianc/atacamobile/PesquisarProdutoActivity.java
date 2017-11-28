@@ -62,6 +62,8 @@ public class PesquisarProdutoActivity extends AppCompatActivity {
             }
         });
 
+        txtBusca.setSingleLine(true);
+
 
     }
 

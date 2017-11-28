@@ -40,7 +40,7 @@ public class ResultadoPesquisaActivity extends AppCompatActivity {
         initLista();
 
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Carrinho");
+        actionBar.setTitle("Resultados");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.voltar_img);
 

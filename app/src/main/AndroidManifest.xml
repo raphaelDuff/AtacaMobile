@@ -52,9 +52,12 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".PesquisarProdutoActivity" />
-        <activity android:name=".ResultadoPesquisaActivity" />
-        <activity android:name=".MapaActivity"></activity>
+        <activity android:name=".PesquisarProdutoActivity"
+            android:screenOrientation="sensorPortrait"/>
+        <activity android:name=".ResultadoPesquisaActivity"
+            android:screenOrientation="sensorPortrait"/>
+        <activity android:name=".MapaActivity"
+            android:screenOrientation="sensorPortrait"/>
     </application>
 
 </manifest>
