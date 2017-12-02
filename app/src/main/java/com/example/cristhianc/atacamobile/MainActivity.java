@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Parcelable;
 
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +33,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -49,6 +54,7 @@ import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements FragmentDisplay {
 
@@ -63,8 +69,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
     private Button bt;
     private LerTagFragment fragment;
     private boolean leituraLiberada = false;
-
     private Drawer drawer;
+
+    private static String TAG = "MainActivity";
+    public static final String ANONYMOUS = "anonymous";
+    public static final int RC_SIGN_IN = 1;
+
+    private String mUsername;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
         inicializarBotoes();
         sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = sp.edit();
+        mUsername = ANONYMOUS;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.NFC) != PackageManager.PERMISSION_GRANTED) {
@@ -85,7 +99,32 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
 
         }
 
-        initNFC();
+        // Initialize Firebase Auth component
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // user is signed in
+                    onSignedInInitialize(user.getDisplayName());
+                    //Toast.makeText(MainActivity.this, "You're now signed in. Welcome to FriendlyChat.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // user is signed out
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setAvailableProviders(
+                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
+
+         initNFC();
 
         PrimaryDrawerItem mainMenuItem = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_mainmenu);
         PrimaryDrawerItem procureProdutoItem = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.drawer_procurar_produto);
@@ -117,6 +156,20 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
 
     }
 
+    @Override
+    public void onAcitivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            Toast.makeText(this,"Usuário Conectado!",Toast.LENGTH_SHORT).show();
+        } else if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(this,"Login Cancelado", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+
+    private void onSignedInInitialize(String username) {
+        mUsername = username;
+    }
 
 
     public void initNFC(){
@@ -141,6 +194,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
         super.onPause();
         if(mNfcAdapter != null) {
             mNfcAdapter.disableForegroundDispatch(this);
+        }
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
 
