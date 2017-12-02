@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
     }
 
     @Override
-    public void onAcitivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             Toast.makeText(this,"Usuário Conectado!",Toast.LENGTH_SHORT).show();
@@ -203,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
     @Override
     public void onResume() {
         super.onResume();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
 
         if(mNfcAdapter!= null) {
             mNfcAdapter.enableForegroundDispatch(this, pendingIntent, nfcIntentFilter, null);
@@ -210,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
             Helper.mostrarMensagem("NFC não detectado!", getApplicationContext());
         }
     }
+
 
 
     @Override

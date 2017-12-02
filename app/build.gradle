@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.example.cristhianc.atacamobile"
@@ -32,16 +32,16 @@ dependencies {
         transitive = true
     }
     //required support lib modules
-    implementation "com.android.support:appcompat-v7:23.4.0"
-    implementation "com.android.support:design:23.4.0"
+    implementation "com.android.support:appcompat-v7:26.0.1"
+    implementation "com.android.support:design:26.0.1"
 
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.google.firebase:firebase-database:11.0.4'
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:appcompat-v7:26.0.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:design:26.0.0'
     compile 'com.firebaseui:firebase-ui-storage:0.6.0'
-    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.android.support:support-v4:26.0.1'
     compile 'com.google.firebase:firebase-storage:11.0.4'
     compile 'com.google.firebase:firebase-auth:11.0.4'
     compile 'com.google.firebase:firebase-messaging:11.0.4'
