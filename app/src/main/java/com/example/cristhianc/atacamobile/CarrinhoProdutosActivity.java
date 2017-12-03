@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -162,6 +163,11 @@ public class CarrinhoProdutosActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    public void callTelaPagamento(View view) {
+        Intent callTelaCfg = new Intent(CarrinhoProdutosActivity.this,PagamentoActivity.class);
+        startActivity(callTelaCfg);
     }
 
 
