@@ -29,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -218,6 +219,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.actionbar, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -225,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
+
 
 
         if (id == R.id.carrinho) {
@@ -235,7 +239,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.sign_out_menu:
+                //sign out
+                AuthUI.getInstance().signOut(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
     @Override
