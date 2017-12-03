@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "949429997795",
+    "firebase_url": "https://atacamobile-97327.firebaseio.com",
+    "project_id": "atacamobile-97327",
+    "storage_bucket": "atacamobile-97327.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949429997795:android:f6108ec30cabc23b",
+        "android_client_info": {
+          "package_name": "com.example.cristhianc.atacamobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "949429997795-3aa026n5ffqu4lbdk3mremmcv2eg2pbr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuKFMRlJFFzHyRUJWmfVB-Xt80CPqMhi0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

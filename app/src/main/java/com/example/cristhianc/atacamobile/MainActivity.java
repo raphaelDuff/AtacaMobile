@@ -54,6 +54,7 @@ import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements FragmentDisplay {
@@ -116,7 +117,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
                                     .createSignInIntentBuilder()
                                     .setIsSmartLockEnabled(false)
                                     .setAvailableProviders(
-                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()))
+                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                                          new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                                     .build(),
                             RC_SIGN_IN);
                 }
