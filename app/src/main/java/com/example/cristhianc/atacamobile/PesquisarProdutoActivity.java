@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -28,6 +30,16 @@ public class PesquisarProdutoActivity extends AppCompatActivity {
 
         PrimaryDrawerItem mainMenuItem = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_mainmenu);
         PrimaryDrawerItem procureProdutoItem = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.drawer_procurar_produto);
+
+        //Get a reference to the AutoCompleteTextView in the layout
+        AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.txtBusca);
+
+        //Get the string array of the possibilities to autocomplete
+        String[] resultadoPesquisa = getResources().getStringArray(R.array.search_array);
+
+        //Create the adapter and set it to the AutoCompleteTextView
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,resultadoPesquisa);
+        textView.setAdapter(adapter);
 
         //Setando o menu lateral (drawer menu)
         drawer = new DrawerBuilder()

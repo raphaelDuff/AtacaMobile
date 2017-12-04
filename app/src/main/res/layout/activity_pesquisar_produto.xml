@@ -17,23 +17,22 @@
         android:layout_alignParentTop="true"
         android:src="@drawable/logo" />
 
-    <EditText
+
+
+    <AutoCompleteTextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/txtBusca"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:hint="@string/pesquisar_digite_produto" />
+        android:hint="@string/pesquisar_digite_produto"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
     <Button
+        android:id="@+id/btn_pesquisar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pesquisar"
-        android:layout_marginTop="20dp"
-        android:id="@+id/btn_pesquisar"
-        android:background="@drawable/adicionarbotao"
-        android:textSize="18sp"
-        android:textAllCaps="true"
         android:layout_gravity="center"
-        />
+        android:layout_marginTop="20dp"
+        android:background="@drawable/adicionarbotao"
+        android:text="@string/pesquisar"
+        android:textAllCaps="true"
+        android:textSize="18sp" />
 </LinearLayout>
