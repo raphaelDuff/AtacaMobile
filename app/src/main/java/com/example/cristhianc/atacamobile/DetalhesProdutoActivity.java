@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -74,6 +75,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
 
         strCodigoProduto = getIntent().getStringExtra("atacamobile-cod");
+        System.out.print(strCodigoProduto);
 
         carregarProduto();
 
@@ -117,14 +119,19 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         try {
 
             ConnectivityManager cm =
-                    (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             boolean isConnected = activeNetwork != null &&
                     activeNetwork.isConnectedOrConnecting();
 
-            if(!isConnected){
+            if (!isConnected) {
                 Helper.mostrarMensagem("Nenhuma conexao com a internet", getApplicationContext());
+            } else if(strCodigoProduto.startsWith("http")){
+                String url = "https://github.com/raphaelDuff/atacamobile";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
             }else {
 
                 mDatabase.child("produtos").orderByChild("codigo").equalTo(strCodigoProduto).addListenerForSingleValueEvent(new ValueEventListener() {

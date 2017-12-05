@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
 
         PrimaryDrawerItem mainMenuItem = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_mainmenu);
         PrimaryDrawerItem procureProdutoItem = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.drawer_procurar_produto);
+        PrimaryDrawerItem projetoInfosItem = new PrimaryDrawerItem().withIdentifier(3).withName("Informações sobre o TCC");
 
         //Setando o menu lateral (drawer menu)
         drawer = new DrawerBuilder()
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(false)
                 .withInnerShadow(true)
-                .addDrawerItems(new SectionDrawerItem(),mainMenuItem,procureProdutoItem)
+                .addDrawerItems(new SectionDrawerItem(),mainMenuItem,procureProdutoItem, projetoInfosItem)
                 .build();
 
         //Marcando menu principal como selecionado
@@ -148,6 +149,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDisplay {
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                 Intent i = new Intent(MainActivity.this,PesquisarProdutoActivity.class);
                 startActivity(i);
+                return true;
+
+            }
+        });
+
+        projetoInfosItem.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                mostrarFragment();
                 return true;
 
             }
